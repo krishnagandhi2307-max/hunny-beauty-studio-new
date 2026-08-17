@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Gallery — {{ site_settings.site_name }}{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="crumbs"><a href="{% url 'studio:home' %}">Home</a> / Gallery</div>
+    <span class="badge-pill">Our Portfolio</span>
+    <h1>Transformations We're Proud Of</h1>
+    <p style="color:var(--ink-soft);max-width:560px;margin:0 auto;">Real clients, real results — bridal, party and everyday glam.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="filter-row">
+      <a href="{% url 'studio:gallery' %}" class="filter-pill {% if not active_category %}active{% endif %}">All</a>
+      {% for cat in categories %}
+        <a href="?category={{ cat.slug }}" class="filter-pill {% if active_category.slug == cat.slug %}active{% endif %}">{{ cat.name }}</a>
+      {% endfor %}
+    </div>
+
+    <div class="gallery-grid">
+      {% for img in page_obj %}
+      <div class="gallery-item" data-full="{{ img.image.url }}">
+        <img src="{{ img.image.url }}" alt="{{ img.title }}" loading="lazy">
+        {% if img.title %}<div class="cap">{{ img.title }}</div>{% endif %}
+      </div>
+      {% empty %}
+      <p class="empty-state">No images yet in this category. Check back soon!</p>
+      {% endfor %}
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <div class="text-center" style="margin-top:40px;display:flex;justify-content:center;gap:10px;">
+      {% if page_obj.has_previous %}<a class="btn btn-outline btn-sm" href="?page={{ page_obj.previous_page_number }}{% if active_category %}&category={{ active_category.slug }}{% endif %}">&laquo; Prev</a>{% endif %}
+      <span style="align-self:center;color:var(--ink-soft);font-size:0.85rem;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}<a class="btn btn-outline btn-sm" href="?page={{ page_obj.next_page_number }}{% if active_category %}&category={{ active_category.slug }}{% endif %}">Next &raquo;</a>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<div class="lightbox"><span class="lightbox-close">&times;</span><img src="" alt="Preview"></div>
+{% endblock %}

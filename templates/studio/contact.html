@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Contact Us — {{ site_settings.site_name }}{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="crumbs"><a href="{% url 'studio:home' %}">Home</a> / Contact</div>
+    <span class="badge-pill">We'd love to hear from you</span>
+    <h1>Get In Touch</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container about-grid" style="align-items:flex-start;">
+    <div>
+      <span class="eyebrow">Contact details</span>
+      <h2 style="margin-bottom:20px;">Visit or Reach Us</h2>
+      <p style="color:var(--ink-soft);margin-bottom:6px;">&#128205; {{ site_settings.address }}</p>
+      <p style="color:var(--ink-soft);margin-bottom:6px;">&#128222; <a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a></p>
+      <p style="color:var(--ink-soft);margin-bottom:6px;">&#9993; <a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a></p>
+      <p style="color:var(--ink-soft);margin-bottom:20px;">&#128337; {{ site_settings.opening_hours }}</p>
+      <a href="{{ site_settings.whatsapp_link }}" target="_blank" class="btn btn-primary">Chat on WhatsApp</a>
+
+      {% if site_settings.google_maps_embed_url %}
+      <div style="margin-top:30px;border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-card);">
+        <iframe src="{{ site_settings.google_maps_embed_url }}" width="100%" height="280" style="border:0;" loading="lazy"></iframe>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="form-card">
+      <h3 style="margin-top:0;margin-bottom:20px;">Send Us a Message</h3>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-grid">
+          <div class="form-group"><label>Name</label>{{ form.name }}{{ form.name.errors }}</div>
+          <div class="form-group"><label>Email</label>{{ form.email }}{{ form.email.errors }}</div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group"><label>Phone</label>{{ form.phone }}</div>
+          <div class="form-group"><label>Subject</label>{{ form.subject }}</div>
+        </div>
+        <div class="form-group"><label>Message</label>{{ form.message }}{{ form.message.errors }}</div>
+        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

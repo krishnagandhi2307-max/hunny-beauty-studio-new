@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}About Us — {{ site_settings.site_name }}{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="crumbs"><a href="{% url 'studio:home' %}">Home</a> / About</div>
+    <span class="badge-pill">Our Story</span>
+    <h1>{{ site_settings.about_title }}</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container about-grid">
+    <div class="about-visual">
+      {% if site_settings.about_image %}
+        <img src="{{ site_settings.about_image.url }}" alt="{{ site_settings.site_name }}">
+      {% else %}
+        <img src="{% static 'images/logo.jpeg' %}" alt="{{ site_settings.site_name }}" style="object-fit:contain;background:var(--white);padding:30px;">
+      {% endif %}
+    </div>
+    <div class="about-copy">
+      <span class="eyebrow">Since day one</span>
+      <h2>Beauty rooted in care</h2>
+      <p>{{ site_settings.about_text }}</p>
+      <div class="about-stats">
+        <div><strong data-count="{{ site_settings.years_experience }}">0</strong><span>Years</span></div>
+        <div><strong data-count="{{ site_settings.happy_clients }}">0</strong><span>Clients</span></div>
+        <div><strong data-count="{{ site_settings.services_offered }}">0</strong><span>Services</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if team %}
+<section class="section" style="background:var(--white);">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">The artists</span><h2>Meet Our Team</h2></div>
+    <div class="team-grid">
+      {% for member in team %}
+      <div class="team-card">
+        <div class="team-photo">
+          {% if member.photo %}<img src="{{ member.photo.url }}" alt="{{ member.name }}">
+          {% else %}<span class="fallback">{{ member.name|slice:":1" }}</span>{% endif %}
+        </div>
+        <h4>{{ member.name }}</h4>
+        <div class="role">{{ member.designation }}</div>
+        {% if member.bio %}<p class="bio">{{ member.bio|truncatewords:20 }}</p>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if testimonials %}
+<section class="section">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">Kind words</span><h2>What Our Clients Say</h2></div>
+    <div class="testimonial-track">
+      {% for t in testimonials %}
+      <div class="testimonial-card">
+        <span class="quote-mark">&ldquo;</span>
+        <div class="stars">{% for i in t.star_range %}&#9733;{% endfor %}{% for i in t.empty_star_range %}&#9734;{% endfor %}</div>
+        <p class="review">{{ t.review_text|truncatewords:28 }}</p>
+        <div class="testimonial-person">
+          {% if t.client_photo %}<img src="{{ t.client_photo.url }}" alt="{{ t.client_name }}">
+          {% else %}<span class="avatar-fallback">{{ t.client_name|slice:":1" }}</span>{% endif %}
+          <strong>{{ t.client_name }}</strong>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="cta-banner">
+      <div><h2>Let's create your best look</h2><p>Book a consultation with our specialists today.</p></div>
+      <a href="{% url 'studio:booking' %}" class="btn btn-light">Book an Appointment</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

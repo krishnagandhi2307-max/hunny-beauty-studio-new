@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}{{ service.name }} — {{ site_settings.site_name }}{% endblock %}
+{% block content %}
+
+<section class="section" style="padding-top:40px;">
+  <div class="container">
+    <div class="crumbs" style="margin-bottom:20px;">
+      <a href="{% url 'studio:home' %}">Home</a> / <a href="{% url 'studio:services' %}">Services</a> / {{ service.name }}
+    </div>
+    <div class="about-grid">
+      <div class="about-visual">
+        {% if service.image %}
+          <img src="{{ service.image.url }}" alt="{{ service.name }}">
+        {% else %}
+          <div style="aspect-ratio:3/4;border-radius:var(--radius-lg);background:var(--gradient-soft);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-card);">
+            <span class="font-display" style="font-size:1.6rem;color:var(--rose-gold-deep);">{{ service.name }}</span>
+          </div>
+        {% endif %}
+      </div>
+      <div class="about-copy">
+        <span class="eyebrow">{{ service.category.name }}</span>
+        <h1 class="font-display" style="font-size:2.2rem;margin:4px 0 16px;">{{ service.name }}</h1>
+        <p style="font-size:1.4rem;color:var(--rose-gold-deep);font-family:var(--font-display);margin-bottom:6px;">{{ service.display_price }}</p>
+        <p style="color:var(--ink-soft);margin-bottom:18px;">&#9200; Approx. duration: {{ service.display_duration }}</p>
+        <p>{{ service.description|default:service.short_description|linebreaks }}</p>
+        <div class="hero-actions">
+          <a href="{% url 'studio:booking' %}?service={{ service.slug }}" class="btn btn-primary">Book This Service</a>
+          <a href="{{ site_settings.whatsapp_link }}" target="_blank" class="btn btn-outline">Ask a Question</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if testimonials %}
+<section class="section" style="background:var(--white);">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">Reviews</span><h2>Clients Who Chose This Service</h2></div>
+    <div class="testimonial-track">
+      {% for t in testimonials %}
+      <div class="testimonial-card">
+        <span class="quote-mark">&ldquo;</span>
+        <div class="stars">{% for i in t.star_range %}&#9733;{% endfor %}{% for i in t.empty_star_range %}&#9734;{% endfor %}</div>
+        <p class="review">{{ t.review_text|truncatewords:28 }}</p>
+        <div class="testimonial-person">
+          {% if t.client_photo %}<img src="{{ t.client_photo.url }}" alt="{{ t.client_name }}">
+          {% else %}<span class="avatar-fallback">{{ t.client_name|slice:":1" }}</span>{% endif %}
+          <strong>{{ t.client_name }}</strong>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if related_services %}
+<section class="section">
+  <div class="container">
+    <div class="section-head"><span class="eyebrow">You may also like</span><h2>More in {{ service.category.name }}</h2></div>
+    <div class="service-grid">
+      {% for s in related_services %}
+      <div class="service-card">
+        <div class="service-media">
+          {% if s.image %}<img src="{{ s.image.url }}" alt="{{ s.name }}">{% else %}<div class="no-image">{{ s.name }}</div>{% endif %}
+          <span class="price-tag">{{ s.display_price }}</span>
+        </div>
+        <div class="service-body">
+          <h3>{{ s.name }}</h3>
+          <p>{{ s.short_description|truncatewords:14 }}</p>
+          <div class="service-footer">
+            <a href="{{ s.get_absolute_url }}" class="btn btn-outline btn-sm btn-block">Details</a>
+            <a href="{% url 'studio:booking' %}?service={{ s.slug }}" class="btn btn-primary btn-sm btn-block">Book</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

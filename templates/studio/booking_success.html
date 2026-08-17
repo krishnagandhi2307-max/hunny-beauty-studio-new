@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Booking Received — {{ site_settings.site_name }}{% endblock %}
+{% block content %}
+<section class="section" style="min-height:60vh;display:flex;align-items:center;">
+  <div class="container text-center" style="max-width:560px;">
+    <div style="font-size:3.4rem;margin-bottom:10px;">&#127801;</div>
+    <span class="eyebrow">Thank you</span>
+    <h1 class="font-display" style="font-size:2rem;margin:6px 0 16px;">Your Appointment Request is In!</h1>
+    <p style="color:var(--ink-soft);margin-bottom:30px;">
+      Our team will reach out shortly on the phone number you provided to confirm your slot.
+      For anything urgent, feel free to reach us directly.
+    </p>
+    <div class="hero-actions" style="justify-content:center;">
+      <a href="{{ site_settings.whatsapp_link }}" target="_blank" class="btn btn-primary">Message us on WhatsApp</a>
+      <a href="{% url 'studio:home' %}" class="btn btn-outline">Back to Home</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

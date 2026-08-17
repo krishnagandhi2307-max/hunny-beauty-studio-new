@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}{{ site_settings.site_name }} — {{ site_settings.tagline }}{% endblock %}</title>
+<meta name="description" content="{% block meta_desc %}{{ site_settings.hero_subheading }}{% endblock %}">
+<link rel="icon" href="{% static 'images/logo.jpeg' %}">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Manrope:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="{% static 'css/style.css' %}?v=20260811-7">
+<!-- Critical image containment: keeps uploaded media usable even if the
+     external stylesheet is stale or temporarily unavailable. -->
+<style>
+  html, body { max-width: 100%; overflow-x: hidden; }
+  *, *::before, *::after { box-sizing: border-box; }
+  img { display: block; max-width: 100%; height: auto; }
+  .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .brand > img,
+  .footer-brand > img {
+    width: 72px !important;
+    height: 72px !important;
+    max-width: 72px !important;
+    flex: 0 0 72px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  .hero-grid, .about-grid, .service-grid, .team-grid { min-width: 0; }
+  .hero-grid > *, .about-grid > *, .service-grid > *, .team-grid > * { min-width: 0; }
+  .hero-visual, .hero-visual .frame, .about-visual,
+  .service-card, .service-media, .gallery-item, .team-photo {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .hero-visual .frame > img,
+  .about-visual > img,
+  .service-media > img,
+  .gallery-item > img,
+  .team-photo > img {
+    display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .hero-visual .frame > img, .service-media > img, .team-photo > img {
+    height: 100% !important;
+    object-fit: cover;
+  }
+  @media (max-width: 960px) {
+    .brand > img { width: 62px !important; height: 62px !important; max-width: 62px !important; flex-basis: 62px; }
+  }
+  @media (max-width: 560px) {
+    .brand > img { width: 54px !important; height: 54px !important; max-width: 54px !important; flex-basis: 54px; }
+  }
+</style>
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a href="{% url 'studio:home' %}" class="brand">
+      <img src="{% static 'images/logo.jpeg' %}" alt="{{ site_settings.site_name }} logo">
+      <div class="brand-text">
+        <div class="name">{{ site_settings.site_name }}</div>
+        <div class="tag">{{ site_settings.tagline }}</div>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="{% url 'studio:home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
+      <a href="{% url 'studio:services' %}" class="{% if request.resolver_match.url_name == 'services' or request.resolver_match.url_name == 'service_detail' %}active{% endif %}">Services</a>
+      <a href="{% url 'studio:gallery' %}" class="{% if request.resolver_match.url_name == 'gallery' %}active{% endif %}">Gallery</a>
+      <a href="{% url 'studio:about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a>
+      <a href="{% url 'studio:contact' %}" class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
+
+    </nav>
+    <div class="nav-cta">
+      <a href="{% url 'studio:booking' %}" class="btn btn-primary btn-sm"><span>Book Now</span></a>
+      <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
+    </div>
+  </div>
+</header>
+
+<main>
+{% if messages %}
+  <div class="container" style="margin-top:24px;">
+    {% for message in messages %}
+      <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src="{% static 'images/logo.jpeg' %}" alt="logo">
+          <span class="name">{{ site_settings.site_name }}</span>
+        </div>
+        <p>{{ site_settings.footer_note }}</p>
+        <div class="social-row">
+          {% if site_settings.instagram_url %}<a href="{{ site_settings.instagram_url }}" target="_blank" rel="noopener">IG</a>{% endif %}
+          {% if site_settings.facebook_url %}<a href="{{ site_settings.facebook_url }}" target="_blank" rel="noopener">FB</a>{% endif %}
+          {% if site_settings.youtube_url %}<a href="{{ site_settings.youtube_url }}" target="_blank" rel="noopener">YT</a>{% endif %}
+          {% if site_settings.pinterest_url %}<a href="{{ site_settings.pinterest_url }}" target="_blank" rel="noopener">PIN</a>{% endif %}
+        </div>
+      </div>
+      <div>
+        <h5>Explore</h5>
+        <p><a href="{% url 'studio:home' %}">Home</a></p>
+        <p><a href="{% url 'studio:services' %}">Our Services</a></p>
+        <p><a href="{% url 'studio:gallery' %}">Gallery</a></p>
+        <p><a href="{% url 'studio:about' %}">About Us</a></p>
+      </div>
+      <div>
+        <h5>Categories</h5>
+        {% for cat in nav_categories|slice:":5" %}
+          <p><a href="{% url 'studio:services' %}?category={{ cat.slug }}">{{ cat.name }}</a></p>
+        {% endfor %}
+      </div>
+      <div>
+        <h5>Get in Touch</h5>
+        <p>{{ site_settings.address }}</p>
+        <p><a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a></p>
+        <p><a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a></p>
+        <p>{{ site_settings.opening_hours }}</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; {% now "Y" %} {{ site_settings.site_name }}. All rights reserved.</span>
+      <span>Crafted with care for beauty that lasts.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="float-actions">
+  <a class="float-btn whatsapp" href="{{ site_settings.whatsapp_link }}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">&#128241;</a>
+  <button class="float-btn top" aria-label="Back to top">&uarr;</button>
+</div>
+
+<script src="{% static 'js/main.js' %}"></script>
+<script>
+  document.documentElement.classList.add('motion-ready');
+  const revealTargets = document.querySelectorAll('.section-head, .category-card, .service-card, .about-visual, .about-copy, .gallery-item, .testimonial-card, .team-card, .form-card, .cta-banner, .footer-grid > div');
+  revealTargets.forEach((element, index) => {
+    element.classList.add('reveal');
+    element.style.setProperty('--reveal-delay', `${(index % 4) * 90}ms`);
+  });
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const observer = new IntersectionObserver((entries, revealObserver) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px' });
+    revealTargets.forEach(element => observer.observe(element));
+  } else {
+    revealTargets.forEach(element => element.classList.add('is-visible'));
+  }
+  const heroFrame = document.querySelector('.hero-visual .frame');
+  if (heroFrame && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    heroFrame.addEventListener('pointermove', event => {
+      const bounds = heroFrame.getBoundingClientRect();
+      heroFrame.style.setProperty('--tilt-x', `${(0.5 - (event.clientY - bounds.top) / bounds.height) * 4}deg`);
+      heroFrame.style.setProperty('--tilt-y', `${((event.clientX - bounds.left) / bounds.width - 0.5) * 4}deg`);
+    });
+    heroFrame.addEventListener('pointerleave', () => {
+      heroFrame.style.setProperty('--tilt-x', '0deg');
+      heroFrame.style.setProperty('--tilt-y', '0deg');
+    });
+  }
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

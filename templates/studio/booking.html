@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Book an Appointment — {{ site_settings.site_name }}{% endblock %}
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="crumbs"><a href="{% url 'studio:home' %}">Home</a> / Booking</div>
+    <span class="badge-pill">Reserve your slot</span>
+    <h1>Book Your Appointment</h1>
+    <p style="color:var(--ink-soft);max-width:560px;margin:0 auto;">Fill in your details below and our team will confirm your slot by phone or WhatsApp within a few hours.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width:760px;">
+    <div class="form-card">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="{{ form.full_name.id_for_label }}">Full Name</label>
+            {{ form.full_name }}
+            {{ form.full_name.errors }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.phone.id_for_label }}">Phone Number</label>
+            {{ form.phone }}
+            {{ form.phone.errors }}
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">Email (optional)</label>
+            {{ form.email }}
+            {{ form.email.errors }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.service.id_for_label }}">Service</label>
+            {{ form.service }}
+            {{ form.service.errors }}
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="{{ form.preferred_date.id_for_label }}">Preferred Date</label>
+            {{ form.preferred_date }}
+            {{ form.preferred_date.errors }}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.preferred_time.id_for_label }}">Preferred Time</label>
+            {{ form.preferred_time }}
+            {{ form.preferred_time.errors }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="{{ form.location_preference.id_for_label }}">Location</label>
+          {{ form.location_preference }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.notes.id_for_label }}">Notes (optional)</label>
+          {{ form.notes }}
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Confirm Booking Request</button>
+        <p class="help-text text-center" style="margin-top:14px;">
+          Prefer to talk? Call {{ site_settings.phone }} or <a href="{{ site_settings.whatsapp_link }}" target="_blank" style="color:var(--rose-gold-deep);">message us on WhatsApp</a>.
+        </p>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

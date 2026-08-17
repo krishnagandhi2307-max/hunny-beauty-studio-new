@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+  
+      <h1>{{ settings.hero_heading }}</h1>
+      <p>{{ settings.hero_subheading }}</p>
+      <div class="hero-actions">
+        <a href="{% url 'studio:booking' %}" class="btn btn-primary">Book an Appointment</a>
+        <a href="{% url 'studio:services' %}" class="btn btn-outline">Explore Services</a>
+      </div>
+      <div class="hero-stats">
+        <div><strong data-count="{{ settings.years_experience }}">0</strong><span>Years of Artistry</span></div>
+        <div><strong data-count="{{ settings.happy_clients }}">0</strong><span>Happy Clients</span></div>
+        <div><strong data-count="{{ settings.services_offered }}">0</strong><span>Signature Services</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="ring"></div>
+      <div class="frame">
+        {% if settings.hero_image %}
+          <img src="{{ settings.hero_image.url }}" alt="{{ settings.site_name }}">
+        {% else %}
+          <img src="{% static 'images/images.jpg' %}" alt="{{ settings.site_name }}" style="object-fit:contain;background:var(--white);">
+        {% endif %}
+      </div>
+      <div class="badge"><strong>5.0</strong><span>★★★★★<br>Client Rated</span></div>
+    </div>
+  </div>
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none"><path fill="var(--nude)" d="M0,32 C240,80 480,0 720,24 C960,48 1200,80 1440,32 L1440,80 L0,80 Z"></path></svg>
+  </div>
+</section>
+
+<section class="section" style="padding-top:20px;">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">What we do</span>
+      <h2>Our Service Categories</h2>
+      <p>From bridal glam to nail art, every category is crafted by trained specialists using premium products.</p>
+    </div>
+    <div class="category-grid">
+      {% for cat in categories %}
+      <a href="{% url 'studio:services' %}?category={{ cat.slug }}" class="category-card">
+        <div class="category-icon">
+          {% if cat.icon %}<img src="{{ cat.icon.url }}" alt="{{ cat.name }}">
+          {% else %}<span class="fallback">{{ cat.name|slice:":1" }}</span>{% endif %}
+        </div>
+        <h4>{{ cat.name }}</h4>
+        <p>{{ cat.active_services.count }} services</p>
+      </a>
+      {% empty %}
+      <p class="empty-state">Service categories will appear here once added in the admin panel.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--white);">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Loved by our clients</span>
+      <h2>Signature Services</h2>
+      <p>A curated selection of our most-booked treatments.</p>
+    </div>
+    <div class="service-grid">
+      {% for service in featured_services %}
+      <div class="service-card">
+        <div class="service-media">
+          {% if service.image %}<img src="{{ service.image.url }}" alt="{{ service.name }}">
+          {% else %}<div class="no-image">{{ service.name }}</div>{% endif %}
+          <span class="price-tag">{{ service.display_price }}</span>
+        </div>
+        <div class="service-body">
+          <span class="service-cat-label">{{ service.category.name }}</span>
+          <h3>{{ service.name }}</h3>
+          <p>{{ service.short_description|default:service.description|truncatewords:16 }}</p>
+          <div class="service-meta"><span>&#9200; {{ service.display_duration }}</span></div>
+          <div class="service-footer">
+            <a href="{{ service.get_absolute_url }}" class="btn btn-outline btn-sm btn-block">Details</a>
+            <a href="{% url 'studio:booking' %}?service={{ service.slug }}" class="btn btn-primary btn-sm btn-block">Book</a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <p class="empty-state">Add services from the admin panel to showcase them here.</p>
+      {% endfor %}
+    </div>
+    <div class="text-center" style="margin-top:44px;">
+      <a href="{% url 'studio:services' %}" class="btn btn-outline">View All Services</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container about-grid">
+    <div class="about-visual">
+      {% if settings.about_image %}
+        <img src="{{ settings.about_image.url }}" alt="About {{ settings.site_name }}">
+      {% else %}
+        <img src="{% static 'images/logo.jpeg' %}" alt="About {{ settings.site_name }}" style="object-fit:contain;background:var(--white);padding:30px;">
+      {% endif %}
+    </div>
+    <div class="about-copy">
+      <span class="eyebrow">Our story</span>
+      <h2>{{ settings.about_title }}</h2>
+      <p>{{ settings.about_text }}</p>
+      <a href="{% url 'studio:about' %}" class="btn btn-primary">Meet the Team</a>
+      <div class="about-stats">
+        <div><strong data-count="{{ settings.years_experience }}">0</strong><span>Years</span></div>
+        <div><strong data-count="{{ settings.happy_clients }}">0</strong><span>Clients</span></div>
+        <div><strong data-count="{{ settings.services_offered }}">0</strong><span>Services</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if gallery_preview %}
+<section class="section" style="background:var(--white);">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Portfolio</span>
+      <h2>Recent Transformations</h2>
+      <p>A glimpse of real looks created in our studio.</p>
+    </div>
+    <div class="gallery-grid">
+      {% for img in gallery_preview %}
+      <div class="gallery-item" data-full="{{ img.image.url }}">
+        <img src="{{ img.image.url }}" alt="{{ img.title }}">
+        {% if img.title %}<div class="cap">{{ img.title }}</div>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center" style="margin-top:40px;">
+      <a href="{% url 'studio:gallery' %}" class="btn btn-outline">View Full Gallery</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if testimonials %}
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Kind words</span>
+      <h2>What Our Clients Say</h2>
+    </div>
+    <div class="testimonial-track">
+      {% for t in testimonials %}
+      <div class="testimonial-card">
+        <span class="quote-mark">&ldquo;</span>
+        <div class="stars">
+          {% for i in t.star_range %}&#9733;{% endfor %}{% for i in t.empty_star_range %}&#9734;{% endfor %}
+        </div>
+        <p class="review">{{ t.review_text|truncatewords:28 }}</p>
+        <div class="testimonial-person">
+          {% if t.client_photo %}<img src="{{ t.client_photo.url }}" alt="{{ t.client_name }}">
+          {% else %}<span class="avatar-fallback">{{ t.client_name|slice:":1" }}</span>{% endif %}
+          <div>
+            <strong>{{ t.client_name }}</strong>
+            {% if t.service %}<span style="font-size:0.78rem;color:var(--ink-soft);">{{ t.service.name }}</span>{% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="cta-banner">
+      <div>
+        <h2>Ready for your best look yet?</h2>
+        <p>Studio &amp; at-home appointments available. Limited slots for weekend bridal bookings — reserve early.</p>
+      </div>
+      <a href="{% url 'studio:booking' %}" class="btn btn-light">Book Your Appointment</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
